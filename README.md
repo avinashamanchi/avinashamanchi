@@ -1,7 +1,7 @@
 - 👋 Hi, I’m @avinashamanchi preferably Avi
 - 👀 I’m interested in sports
 - 🌱 I’m currently learning python
-- 💞️ I’m looking to collaborate on 1.1.6 priv game repositry 
+- 💞️ I’m looking to collaborate on code for computer science
 - 📫 How to reach me is on my instagram
 
 <!---
