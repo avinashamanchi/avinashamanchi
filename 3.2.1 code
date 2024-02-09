@@ -1,0 +1,133 @@
+menu = [
+    {"type": "sandwich", "choices": ["chicken", "beef", "tofu"], "prices": [5.25, 6.25, 5.75]},
+    {"type": "beverage", "choices": ["small", "medium", "large"], "prices": [1.00, 1.75, 2.25]},
+    {"type": "fries", "choices": ["small", "medium", "large"], "prices": [1.00, 1.50, 2.00]},
+    {"type": "ketchup_packets", "choices": [], "prices": [0]}
+]
+
+order_list = []
+
+def get_user_input(menu_item):
+    while True:
+        try:
+            print(f"Choose {menu_item['type']} ({', '.join(menu_item['choices'])}): ")
+            user_choice = input().lower()
+            if user_choice in menu_item['choices']:
+                return user_choice
+            print(f"Sorry, {user_choice} is not on the menu for {menu_item['type']}. Please choose a valid option.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+
+def add_to_order(menu_item, choice):
+    try:
+        index = menu_item["choices"].index(choice)
+        price = menu_item["prices"][index]
+        order_list.append({"type": menu_item["type"], "choice": choice, "price": price})
+        print(f"{choice} {menu_item['type']} added to your order.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def remove_from_order(menu_item, choice):
+    try:
+        index = menu_item["choices"].index(choice)
+        order_list.remove(next(item for item in order_list if item["type"] == menu_item["type"] and item["choice"] == choice))
+        print(f"{choice} {menu_item['type']} removed from your order.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+def restart_program():
+    print("\nRestarting the program...\n")
+    main()
+
+def main():
+    user_choices = ["", "", ""]
+    user_choices[0] = get_user_input(menu[0])
+    add_to_order(menu[0], user_choices[0])
+
+    while True:
+        try:
+            print("Would you like a beverage? (yes/no): ")
+            user_beverage_response = input().lower()
+            if user_beverage_response == "yes":
+                user_choices[1] = get_user_input(menu[1])
+                add_to_order(menu[1], user_choices[1])
+                break
+            elif user_beverage_response == "no":
+                break
+            print("Invalid response. Please enter 'yes' or 'no'.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+
+    while True:
+        try:
+            print("Would you like french fries? (yes/no): ")
+            user_fries_response = input().lower()
+            if user_fries_response == "yes":
+                user_choices[2] = get_user_input(menu[2])
+                add_to_order(menu[2], user_choices[2])
+                if user_choices[2] == "small":
+                    while True:
+                        try:
+                            print("Would you like to mega-size your fries? (yes/no): ")
+                            mega_size_response = input().lower()
+                            if mega_size_response == "yes":
+                                user_choices[2] = "large"
+                                remove_from_order(menu[2], "small")
+                                add_to_order(menu[2], user_choices[2])
+                                break
+                            elif mega_size_response == "no":
+                                break
+                            print("Invalid response. Please enter 'yes' or 'no'.")
+                        except Exception as e:
+                            print(f"An unexpected error occurred: {e}")
+                break
+            elif user_fries_response == "no":
+                break
+            print("Invalid response. Please enter 'yes' or 'no'.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+
+    while True:
+        try:
+            print("How many ketchup packets would you like? Enter a non-negative integer: ")
+            user_ketchup_response = int(input())
+            if user_ketchup_response >= 0:
+                menu[3]["choices"].append(user_ketchup_response)
+                add_to_order(menu[3], user_ketchup_response)
+                break  
+            print("Please enter a non-negative integer for the number of ketchup packets.")
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+
+    total_cost = sum(item["price"] for item in order_list)
+
+    got_discount = user_choices[1] != "" and user_choices[2] != ""
+    if got_discount:
+        total_cost -= 1.00
+
+    print("\nYour order:")
+    for item in order_list:
+        print(f"- {item['choice']} {item['type']} (${item['price']:.2f}")
+
+    if got_discount:
+        print("Your lucky day! You got a $1.00 discount!")
+
+    print("\nTotal cost of the order: ${:.2f}".format(total_cost))
+
+    while True:
+        try:
+            print("\nWould you like to restart? (yes/no): ")
+            restart_response = input().lower()
+            if restart_response == "yes":
+                restart_program()
+            elif restart_response == "no":
+                print("Exiting the program. Goodbye!")
+                exit()
+            print("Invalid response. Please enter 'yes' or 'no'.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
